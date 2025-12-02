@@ -1,4 +1,7 @@
 ---
+// 博客单篇页面的路由：
+// - getStaticPaths 返回所有文章的路径，Astro 会为每篇文章生成静态页面
+// - 渲染时使用 render(post) 来获取 MDX/MD 渲染后的 Content 组件并插入到 BlogPost 布局中
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 

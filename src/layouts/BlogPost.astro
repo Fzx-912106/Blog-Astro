@@ -1,4 +1,10 @@
 ---
+// 文章布局组件（用于渲染单篇文章）
+// 通过 <BlogPost {...post.data}> <Content /> </BlogPost> 使用
+// 常用字段来源于内容集合的 frontmatter（参见 src/content.config.ts）
+// - title, description: 用于 meta/title
+// - pubDate, updatedDate: 显示发布时间/更新时间
+// - heroImage: 文章顶部大图（使用 astro:assets 的 Image 组件渲染）
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
@@ -8,13 +14,16 @@ import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+// 从 Astro.props 解构 frontmatter 字段
+const { title, description, pubDate, updatedDate, heroImage } = Astro.props as Props;
 ---
 
 <html lang="en">
 	<head>
+		<!-- 页面 Meta：title/description 使用 article 的 frontmatter -->
 		<BaseHead title={title} description={description} />
 		<style>
+			/* 局部样式：文章页面容器与排版 */
 			main {
 				width: calc(100% - 2em);
 				max-width: 100%;
@@ -59,13 +68,16 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<Header />
 		<main>
 			<article>
+				<!-- 如果存在 heroImage 则用 Image 渲染（可替换宽高） -->
 				<div class="hero-image">
 					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
 				</div>
+
 				<div class="prose">
 					<div class="title">
 						<div class="date">
 							<FormattedDate date={pubDate} />
+							{ /* 若有 updatedDate，则显示最后更新时间 */ }
 							{
 								updatedDate && (
 									<div class="last-updated-on">
@@ -77,6 +89,8 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 						<h1>{title}</h1>
 						<hr />
 					</div>
+
+					<!-- 文章正文插槽：Content 组件会注入 Markdown/MDX 渲染后的内容 -->
 					<slot />
 				</div>
 			</article>
